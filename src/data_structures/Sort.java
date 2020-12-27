@@ -5,29 +5,18 @@ import java.util.ArrayList;
 public class Sort{
 
 	public static void main(String[] args) {
-//		String a= "Asdf", b= "Dgfsd";
-//		int h1 = a.hashCode();
-//		int h2 = b.hashCode();
-//
-//		System.out.println(h1+ "\n" + h2);
-//		System.out.println(h1>h2);
-//		System.out.println(h1<h2);
-//		System.out.println(h1==h2);
-
-//		System.out.println(arrayList.get(3).compareTo(arrayList.get(1)));
 
 		ArrayList<Integer> arrayList = new ArrayList<>();
-		arrayList.add(76);
-		arrayList.add(2);
-		arrayList.add(5);
 		arrayList.add(8);
+		arrayList.add(2);
+		arrayList.add(76);
+		arrayList.add(5);
 		arrayList.add(1);
-//		ArrayList<Integer> arr2 = new ArrayList<>();
 		arrayList.add(24);
 		arrayList.add(56);
 		arrayList.add(6);
 		arrayList.add(10);
-		System.out.println(mergeSort(arrayList));
+		System.out.println(radixSort(arrayList));
 	}
 
 	//bubble sort
@@ -48,6 +37,8 @@ public class Sort{
 		return arrayList;
 	}
 
+
+
 	//selection sort
 	public static ArrayList<Integer> selectionSort(ArrayList<Integer> arrayList){
 		for (int i = 0; i < arrayList.size(); i++) {
@@ -64,6 +55,8 @@ public class Sort{
 		return arrayList;
 	}
 
+
+
 	//insertion sort
 	public static ArrayList<Integer> insertionSort(ArrayList<Integer> arrayList){
 		for (int i = 1; i < arrayList.size(); i++) {
@@ -75,6 +68,8 @@ public class Sort{
 		}
 		return arrayList;
 	}
+
+
 
 	//merge sort
 	public static ArrayList<Integer> merge(ArrayList<Integer> arr1, ArrayList<Integer> arr2){
@@ -99,7 +94,6 @@ public class Sort{
 		}
 		return result;
 	}
-
 	public static ArrayList<Integer> mergeSort(ArrayList<Integer> arrayList){
 		if(arrayList.size()<=1) return arrayList;
 		ArrayList<Integer> left = mergeSort(new ArrayList<Integer>(arrayList.subList(0,arrayList.size()/2)));
@@ -107,12 +101,80 @@ public class Sort{
 		return merge(left, right);
 	}
 
+
+
 	// quick sort
-	public static ArrayList<Integer> pivotHelper(ArrayList<Integer> arrayList,int start ,int end){
+	public static int pivotHelper(ArrayList<Integer> arrayList,int start ,int end){
 		int pivot = arrayList.get(start);
 		int swapIndex = start;
-		for(int i=start+!; i<end; i++){
-			if(arrayList)
+		for(int i=start+1; i<end; i++){
+			if(arrayList.get(i)<pivot){
+				swapIndex++;
+				swap(arrayList, swapIndex, i);
+			}
+//			System.out.println(arrayList);
 		}
-	} 
+		swap(arrayList, swapIndex, start);
+//		System.out.println("final pivot "+ arrayList);
+		return swapIndex;
+	}
+	public static void swap(ArrayList<Integer> array, int i1, int i2) {
+		int temp = array.get(i1);
+		array.set(i1, array.get(i2));
+		array.set(i2, temp);
+	}
+	public static ArrayList<Integer> quickSort(ArrayList<Integer> arrayList, int left, int right){
+		if(left < right){
+			int pivot = pivotHelper(arrayList, left, right);
+
+//			System.out.print("pivot " + pivot + ", ");
+//			System.out.print("left  " + left + ", ");
+//			System.out.print("right " + right + ".\n");
+//
+//			System.out.println("left: ");
+			quickSort(arrayList, left, pivot);
+//
+//			System.out.println("right: ");
+			quickSort(arrayList, pivot+1, right);
+		}
+//		System.out.println("* "+ arrayList);
+		return arrayList;
+	}
+
+
+
+	// radix sort
+	public static int getDigit(int n, int d){
+		return Math.abs((n / (int) Math.pow(10,d)) % 10);
+	}
+	public static int numLen(int n){
+		return (int) Math.log10(Math.abs(n)) + 1;
+	}
+	public static int greatestNumLen(ArrayList<Integer> numbers){
+		int numLen = 0;
+		for(int i : numbers){
+			numLen = Math.max(numLen, numLen(i));
+		}
+		return numLen;
+	}
+	public static ArrayList<Integer> radixSort(ArrayList<Integer> arrayList){
+		int greatestNumLen = greatestNumLen(arrayList);
+		for(int i = 0; i<greatestNumLen; i++){
+			ArrayList<ArrayList<Integer>> buckets = new ArrayList<>();
+			for(int j = 0; j<10; j++){
+				buckets.add(new ArrayList<Integer>());
+			}
+			for (Integer integer : arrayList) {
+				buckets.get(getDigit(integer, i)).add(integer);
+			}
+			arrayList.clear();
+			for(int j = 0; j<10; j++){
+				arrayList.addAll(buckets.get(j));
+			}
+//			System.out.println(buckets);
+//			System.out.println(arrayList);
+			buckets.clear();
+		}
+		return arrayList;
+	}
 }
