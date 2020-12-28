@@ -1,21 +1,6 @@
 package data_structures;
 
-class Main{
-
-	public static void main(String[] args) {
-		DoubleLinkedList list = new DoubleLinkedList();
-
-		list.push(1);
-		list.push(2);
-
-		list.printAllItems();
-
-		list.pop();
-
-		list.printAllItems();
-	}
-}
-
+@SuppressWarnings("unused")
 public class DoubleLinkedList {
 	DLLNode head = null;
 	DLLNode tail = null;
@@ -53,6 +38,93 @@ public class DoubleLinkedList {
 			tail.setNext(null);
 		}
 		length--;
+	}
+
+	public void shift(){
+		if(length == 0) return;
+		if(length == 1) {
+			head = null;
+			tail = null;
+		}else{
+			DLLNode tempHead = head;
+			head = head.getNext();
+			head.setPrevious(null);
+			tempHead.setNext(null);
+		}
+		length--;
+	}
+
+	public void unShift(Object data){
+		DLLNode node = new DLLNode(data);
+		if(head == null){
+			head = node;
+			tail = node;
+		} else {
+			head.setPrevious(node);
+			node.setNext(head);
+			head = node;
+		}
+		length++;
+	}
+
+	public DLLNode get(int index){
+		if(index<0 || index>= length) return null;
+		DLLNode node;
+		if(index <= length/2){
+			node = head;
+			for (int i = 0; i< index; i++){
+				node = node.getNext();
+			}
+		} else {
+			node = tail;
+			index = length - index -1;
+			for (int i = 0; i< index; i++){
+				node = node.getPrevious();
+			}
+		}
+		return node;
+	}
+
+	public void set(int index, Object data){
+		if(index < 0 || index >= length) return;
+		DLLNode foundNode = get(index);
+		foundNode.setData(data);
+	}
+
+	public void insert(int index, Object data){
+		if (index >= 0 && index < length) {
+			if(index == 0){ unShift(data);}
+			else if(index == length-1){ push(data);}
+			else{
+				DLLNode node = get(index);
+				DLLNode previous = node.getPrevious();
+				DLLNode newNode = new DLLNode(data);
+
+				previous.setNext(newNode);
+				newNode.setPrevious(previous);
+				newNode.setNext(node);
+				node.setPrevious(newNode);
+
+				length++;
+			}
+		}
+	}
+
+	public void remove(int index){
+		if(index >= 0 && index < length){
+			if(index == 0) {
+				shift();
+			}else if (index == length-1){
+				pop();
+			}else{
+				DLLNode node = get(index);
+				node.getPrevious().setNext(node.getNext());
+				node.getNext().setPrevious(node.getPrevious());
+				node.setPrevious(null);
+				node.setNext(null);
+				length--;
+			}
+		}
 	}
 }
 
